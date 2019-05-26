@@ -189,7 +189,8 @@ def cross_validate(clfs, all_drugs, all_pairs, embedding_df, n_fold, f, n_propot
     
     for i,(fold_data) in enumerate(drug_k_fold):
         #print (fold_data)
-        train_drugs, test_drugs, train_positives, test_positives_drugwise, test_positives_pairwise = fold_data
+        fold_index,train_drugs, test_drugs, train_positives, test_positives_drugwise, test_positives_pairwise = fold_data
+        #train_drugs, test_drugs, train_positives, test_positives_drugwise, test_positives_pairwise = fold_data
         print ("train drugs",len(train_drugs),"test drugs",len(test_drugs), file=f)
         train_negatives, test_negatives_drugwise, test_negatives_pairwise = select_negative_samples(train_drugs, test_drugs, train_positives, test_positives_drugwise, test_positives_pairwise, n_propotion=1)
         train =  pd.concat([getDataFrame(train_positives, 1),  getDataFrame(train_negatives, 0)],ignore_index=True) 
