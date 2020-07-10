@@ -11,4 +11,6 @@ We performed cross-validation using different setting:
 ### Time-slice CV:
  - ddi_predict_timeslice.ipynb
 
+## To cite this work
+Celebi, Remzi, Huseyin Uyar, Erkan Yasar, Ozgur Gumus, Oguz Dikenelli, and Michel Dumontier. "Evaluation of knowledge graph embedding approaches for drug-drug interaction prediction in realistic settings." BMC bioinformatics 20, no. 1 (2019): 1-14.
 
