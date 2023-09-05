@@ -9,8 +9,10 @@ import time
 from sklearn import svm, linear_model, neighbors
 from sklearn import tree, ensemble
 from sklearn import metrics
-from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import make_scorer, accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, average_precision_score
+from sklearn.metrics._scorer import _check_multimetric_scoring
 
+from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import StratifiedKFold
 
 import networkx as nx
@@ -87,8 +89,7 @@ def balance_data(pairs, classes, n_proportion):
 def get_scores(clf, X_new, y_new):
 
     scoring = ['precision', 'recall', 'accuracy', 'roc_auc', 'f1', 'average_precision']
-    scorers, multimetric = metrics.scorer._check_multimetric_scoring(clf, scoring=scoring)
-    #print(scorers)
+    scorers = metrics._scorer._check_multimetric_scoring(clf, scoring=scoring)
     scores = multimetric_score(clf, X_new, y_new, scorers)
     return scores
 
@@ -107,9 +108,9 @@ def crossvalid(train_df, test_df, clfs, run_index, fold_index):
         scores['method'] = name
         scores['fold'] = fold_index
         scores['run'] = run_index
-        results = results.append(scores, ignore_index=True)
-
-    return results#, sclf_scores
+        df = pd.DataFrame.from_dict([scores])
+        results = pd.concat([results, df], ignore_index=True)
+    return results
 
 def cv_run(run_index, pairs, classes, embedding_df, train, test, fold_index, clfs):
     print( len(train),len(test))
@@ -149,8 +150,8 @@ def kfoldCV(sc, pairs_all, classes_all, embedding_df, clfs, n_run, n_fold, n_pro
         cv_list = [ (train,test,k) for k, (train, test) in enumerate(cv)]
         #pair_df = pd.DataFrame(list(zip(pairs_[:,0],pairs_[:,1],classes_)), columns=['Drug1','Drug2','Class'])
         scores = cvSpark(sc, r, bc_pairs_classes.value[0], bc_pairs_classes.value[1], cv_list, bc_embedding_df.value, clfs)
-        scores_df = scores_df.append(scores)
-        
+        for score in scores:
+            scores_df = pd.concat([scores_df, score], ignore_index=True)
     return scores_df
 
 
